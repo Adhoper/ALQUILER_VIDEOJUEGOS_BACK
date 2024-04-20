@@ -15,6 +15,8 @@ builder.Services.AddDbContext<AlquilerVideoJuegoContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
 
 builder.Services.AddScoped<IVideoJuegoService, VideoJuegoService>();
+builder.Services.AddScoped<IAlquilerService, AlquilerService>();
+builder.Services.AddScoped<ICategoriaVideoJuegoService, CategoriaVideoJuegoService>();
 
 builder.Services.AddCors();
 

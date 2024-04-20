@@ -6,19 +6,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ALQUILER_VIDEOJUEGOS_BACK.Services
 {
-    public class AlquilerService : IAlquilerService
+    public class CategoriaVideoJuegoService : ICategoriaVideoJuegoService
     {
         private readonly AlquilerVideoJuegoContext _Context;
-        public AlquilerService(AlquilerVideoJuegoContext Context)
+        public CategoriaVideoJuegoService(AlquilerVideoJuegoContext Context)
         {
             this._Context = Context;
         }
-        public async Task<Response<GetAlquilerDTO>> GetAlquiler()
+        public async Task<Response<GetCategoriaVideojuegoDTO>> GetCategoriaVideojuego()
         {
-            var result = new Response<GetAlquilerDTO>();
+            var result = new Response<GetCategoriaVideojuegoDTO>();
             try
             {
-                result.DataList = _Context.GetAlquilerDTO.FromSqlInterpolated($"dbo.GetAlquiler").ToList();
+                result.DataList = _Context.GetCategoriaVideojuegoDTO.FromSqlInterpolated($"dbo.GetCategoriaVideoJuego").ToList();
             }
             catch (Exception ex)
             {
@@ -28,13 +28,13 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
             return result;
         }
 
-        public async Task<Response> SetAlquiler(SetAlquiler model)
+        public async Task<Response> SetCategoriaVideoJuego(SetCategoriaVideoJuego model)
         {
             var result = new Response();
             try
             {
                 _Context.Database.
-                    ExecuteSqlInterpolated($"dbo.SetAlquiler {model.IdUsuario},{model.IdVideoJuego},{model.FechaInicio}, {model.FechaFin} ,{model.PrecioTotal},{model.EstatusPago}, {model.CantidadAlquilado}");
+                    ExecuteSqlInterpolated($"dbo.SetCategoriaVideoJuego {model.Nombre},{model.Descripcion}");
 
                 result.Message = "Los datos fueron ingresados exitosamente!";
             }
@@ -47,16 +47,16 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
             return result;
         }
 
-        public async Task<Response> UpdateAlquiler(UpdateAlquiler model)
+        public async Task<Response> UpdateCategoriaVideoJuego(UpdateCategoriaVideoJuego model)
         {
             var resultado = new Response();
 
             try
             {
                 _Context.Database.
-                   ExecuteSqlInterpolated($"dbo.UpdateAlquiler {model.IdAlquiler},{model.IdUsuario},{model.IdVideoJuego},{model.FechaInicio}, {model.FechaFin} ,{model.PrecioTotal},{model.EstatusPago}, {model.CantidadAlquilado}");
+                   ExecuteSqlInterpolated($"dbo.UpdateCategoriaVideoJuego {model.IdCategoriaVJ},{model.Nombre},{model.Descripcion}");
 
-                resultado.Message = "Los datos fueron ingresados exitosamente!";
+                resultado.Message = "Los datos fueron actualizados exitosamente!";
             }
             catch (Exception ex)
             {
