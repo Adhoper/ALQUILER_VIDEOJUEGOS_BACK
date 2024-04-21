@@ -16,5 +16,7 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Context
         public DbSet<UpdateVideoJuego> UpdateVideoJuego { get; set; }
         public DbSet<GetAlquilerDTO> GetAlquilerDTO { get; set; }
         public DbSet<GetCategoriaVideojuegoDTO> GetCategoriaVideojuegoDTO { get; set; }
+        public DbSet<GetUsuarioDTO> GetUsuarioDTO { get; set; }
+        public DbSet<LoginUsuarioInfo> LoginUsuario { get; set; }
     }
 }
