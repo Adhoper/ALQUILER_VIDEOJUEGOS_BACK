@@ -6,7 +6,7 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.DTO
     {
         [Key]
         public int IdCategoriaVJ { get; set; }
-        public int Nombre { get; set; }
-        public int Descripcion { get; set; }
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
     }
 }
