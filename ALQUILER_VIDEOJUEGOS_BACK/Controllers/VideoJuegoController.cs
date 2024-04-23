@@ -1,11 +1,13 @@
 ﻿using ALQUILER_VIDEOJUEGOS_BACK.Interfaces;
 using ALQUILER_VIDEOJUEGOS_BACK.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ALQUILER_VIDEOJUEGOS_BACK.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class VideoJuegoController : Controller
     {
         private readonly IVideoJuegoService _videoJuegosService;
@@ -15,7 +17,7 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Controllers
             this._videoJuegosService = videoJuegosService;
         }
 
-
+        
         [HttpGet("get-all-videogames")]
         public async Task<IActionResult> GetVideoJuegos()
         {

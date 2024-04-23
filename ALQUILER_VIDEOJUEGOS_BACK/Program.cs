@@ -44,6 +44,7 @@ builder.Services.AddScoped<IAlquilerService, AlquilerService>();
 builder.Services.AddScoped<ICategoriaVideoJuegoService, CategoriaVideoJuegoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IAutenticacionService, AutenticacionService>();
+builder.Services.AddScoped<IRolService, RolService>();
 
 builder.Services.AddCors();
 

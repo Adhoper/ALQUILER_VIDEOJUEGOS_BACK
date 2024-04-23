@@ -7,5 +7,6 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Interfaces
     {
         Task<Response<GetUsuarioDTO>> GetUsuario();
         Task<Response> SetUsuario(SetUsuario setUsuario);
+        Task<Response> UpdateUsuario(UpdateUsuario updateUsuario);
     }
 }

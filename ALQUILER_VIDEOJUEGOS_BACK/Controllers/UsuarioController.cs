@@ -24,5 +24,11 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Controllers
             return Ok(await _Service.SetUsuario(model));
         }
 
+        [HttpPut("update-usuario")]
+        public async Task<IActionResult> UpdateUsuario(UpdateUsuario model)
+        {
+            return Ok(await _Service.UpdateUsuario(model));
+        }
+
     }
 }

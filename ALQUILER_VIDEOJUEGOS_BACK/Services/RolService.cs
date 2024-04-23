@@ -6,19 +6,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ALQUILER_VIDEOJUEGOS_BACK.Services
 {
-    public class UsuarioService : IUsuarioService
+    public class RolService : IRolService
     {
         private readonly AlquilerVideoJuegoContext _context;
-        public UsuarioService(AlquilerVideoJuegoContext context)
+        public RolService(AlquilerVideoJuegoContext context)
         {
             this._context = context;
         }
-        public async Task<Response<GetUsuarioDTO>> GetUsuario()
+        public async Task<Response<GetRolDTO>> GetRol()
         {
-            var result = new Response<GetUsuarioDTO>();
+            var result = new Response<GetRolDTO>();
             try
             {
-                result.DataList = _context.GetUsuarioDTO.FromSqlInterpolated($"dbo.GetUsuario").ToList();
+                result.DataList = _context.GetRolDTO.FromSqlInterpolated($"dbo.GetRol").ToList();
             }
             catch (Exception ex)
             {
@@ -28,15 +28,13 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
             return result;
         }
 
-        public async Task<Response> SetUsuario(SetUsuario model)
+        public async Task<Response> SetRol(SetRol model)
         {
             var result = new Response();
-            var passHash = Utilidades.HashPassword(model.Contrasena);
             try
             {
-
                 _context.Database.
-                    ExecuteSqlInterpolated($"dbo.SetUsuario {model.Nombre},{model.Apellido},{model.Correo},{passHash},{model.Direccion},{model.Telefono},{model.IdRol}");
+                    ExecuteSqlInterpolated($"dbo.SetRol {model.Nombre},{model.Descripcion}");
 
                 result.Message = "Los datos fueron ingresados exitosamente!";
             }
@@ -49,14 +47,14 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
             return result;
         }
 
-        public async Task<Response> UpdateUsuario(UpdateUsuario model)
+        public async Task<Response> UpdateRol(UpdateRol model)
         {
             var resultado = new Response();
 
             try
             {
                 _context.Database.
-                   ExecuteSqlInterpolated($"dbo.UpdateUsuario {model.IdUsuario},{model.Nombre},{model.Apellido},{model.Correo},{model.Contrasena},{model.Direccion},{model.Telefono}");
+                   ExecuteSqlInterpolated($"dbo.UpdateCategoriaVideoJuego {model.IdRol},{model.Nombre},{model.Descripcion}");
 
                 resultado.Message = "Los datos fueron actualizados exitosamente!";
             }
