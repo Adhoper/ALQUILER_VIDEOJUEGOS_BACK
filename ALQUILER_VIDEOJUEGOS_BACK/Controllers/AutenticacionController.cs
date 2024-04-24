@@ -24,9 +24,9 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Controllers
 
         [HttpPost]
         [Route("ValidarAutenticacion")]
-        public async Task<Response> ValidarAutenticacion(string correo, string contrasena)
+        public async Task<Response> ValidarAutenticacion([FromBody] UsuarioLoginDTO data)
         {
-            return await _Service.ValidarAutenticacion(correo, contrasena);
+            return await _Service.ValidarAutenticacion(data);
         }
     }
 }

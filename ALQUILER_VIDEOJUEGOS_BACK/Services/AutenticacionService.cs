@@ -1,6 +1,7 @@
 ﻿using ALQUILER_VIDEOJUEGOS_BACK.Context;
 using ALQUILER_VIDEOJUEGOS_BACK.DTO;
 using ALQUILER_VIDEOJUEGOS_BACK.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.UserSecrets;
@@ -39,24 +40,25 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
             return result;
         }
 
-        public async Task<Response> ValidarAutenticacion(string correo, string contrasena)
+        public async Task<Response> ValidarAutenticacion([FromBody] UsuarioLoginDTO data)
         {
             var result = new Response<LoginUsuarioInfo>();
             var token = new Response<TokenGot>();
             try
             {
-                result = await LoginUsuario(correo);
-                var passHash = Utilidades.HashPassword(contrasena);
+                result = await LoginUsuario(data.Correo);
+                var passHash = Utilidades.HashPassword(data.Contrasena);
 
                 if(result.SingleData != null)
                 {
-                    if (correo == result.SingleData.Correo && passHash.SequenceEqual(result.SingleData.Contrasena))
+                    if (data.Correo == result.SingleData.Correo && passHash.SequenceEqual(result.SingleData.Contrasena))
                     {
                         result.Message = "La contraseña es igual";
                         var keyBytes = Encoding.ASCII.GetBytes(secretKey);
                         var claims = new ClaimsIdentity();
 
-                        claims.AddClaim(new Claim(ClaimTypes.NameIdentifier,correo));
+                        claims.AddClaim(new Claim(ClaimTypes.NameIdentifier,data.Correo));
+                        claims.AddClaim(new Claim("Scope",result.SingleData.NombreRol));
 
                         var tokenDescriptor = new SecurityTokenDescriptor
                         {
@@ -76,7 +78,7 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
                     }
                     else
                     {
-                        token.Message = "La contraseña ingresada no coincide con su contraseña";
+                        token.Message = "La contraseña ingresada no coincide con su contraseña actual";
                         token.SingleData = new TokenGot { Token = ""};
 
                         return token;
@@ -85,7 +87,15 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
                 }
                 else
                 {
-                    token.Message = "El correo ingresado no existe";
+                    if (result.Errors.ToString().Length > 0)
+                    {
+                        token.Message = result.Errors[0];
+                    }
+                    else
+                    {
+                        token.Message = "El correo ingresado no existe";
+                    }
+                    
                 }
 
             }
