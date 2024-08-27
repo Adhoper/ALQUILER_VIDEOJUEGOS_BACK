@@ -6,6 +6,7 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.DTO
     {
         [Key]
         public int IdUsuario { get; set; }
+        public string Usuario {  get; set; }
         public string Correo { get; set; }
         public Byte[] Contrasena { get; set; }
         public int IdRol {  get; set; }
