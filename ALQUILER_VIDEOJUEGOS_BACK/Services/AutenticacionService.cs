@@ -22,13 +22,13 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
             this._context = context;
             secretKey = configuration.GetSection("settings").GetSection("secretkey").ToString();
         }
-        public async Task<Response<LoginUsuarioInfo>> LoginUsuario(string correo)
+        public async Task<Response<LoginUsuarioInfo>> LoginUsuario(string identificadorUsuario)
         {
             var result = new Response<LoginUsuarioInfo>();
             try
             {
 
-                var usuariologin = _context.LoginUsuario.FromSqlInterpolated($"dbo.LoginUsuarioInfo {correo}").ToList();
+                var usuariologin = _context.LoginUsuario.FromSqlInterpolated($"dbo.LoginUsuarioInfo {identificadorUsuario}").ToList();
                 result.SingleData = usuariologin.FirstOrDefault();
 
             }
@@ -46,18 +46,18 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
             var token = new Response<TokenGot>();
             try
             {
-                result = await LoginUsuario(data.Correo);
+                result = await LoginUsuario(data.IdentificadorUsuario);
                 var passHash = Utilidades.HashPassword(data.Contrasena);
 
                 if(result.SingleData != null)
                 {
-                    if (data.Correo == result.SingleData.Correo && passHash.SequenceEqual(result.SingleData.Contrasena))
+                    if ((data.IdentificadorUsuario == result.SingleData.Correo || data.IdentificadorUsuario == result.SingleData.Usuario) && passHash.SequenceEqual(result.SingleData.Contrasena))
                     {
                         result.Message = "La contraseña es igual";
                         var keyBytes = Encoding.ASCII.GetBytes(secretKey);
                         var claims = new ClaimsIdentity();
 
-                        claims.AddClaim(new Claim(ClaimTypes.NameIdentifier,data.Correo));
+                        claims.AddClaim(new Claim(ClaimTypes.NameIdentifier,data.IdentificadorUsuario));
                         claims.AddClaim(new Claim("Scope",result.SingleData.NombreRol));
 
                         var tokenDescriptor = new SecurityTokenDescriptor
@@ -87,13 +87,13 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
                 }
                 else
                 {
-                    if (result.Errors.ToString().Length > 0)
+                    if (result.Errors.Any())
                     {
                         token.Message = result.Errors[0];
                     }
                     else
                     {
-                        token.Message = "El correo ingresado no existe";
+                        token.Message = "El correo o el usuario ingresado no existe";
                     }
                     
                 }

@@ -13,5 +13,8 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.DTO
         public int IdCategoriaVJ { get; set; }
         public string NombreCategoria { get; set; }
         public string Estatus { get; set; }
+        public DateTime? FechaCreacion { get; set; }
+        public string? Plataforma { get; set; }
+        public DateTime? FechaLanzamiento {  get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class VideoJuegoController : Controller
     {
         private readonly IVideoJuegoService _videoJuegosService;
