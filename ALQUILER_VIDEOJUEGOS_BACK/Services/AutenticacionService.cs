@@ -44,6 +44,7 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
         {
             var result = new Response<LoginUsuarioInfo>();
             var token = new Response<TokenGot>();
+            //data.IdentificadorUsuario = data.IdentificadorUsuario.ToLower();
             try
             {
                 result = await LoginUsuario(data.IdentificadorUsuario);
@@ -51,9 +52,9 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
 
                 if(result.SingleData != null)
                 {
-                    if ((data.IdentificadorUsuario == result.SingleData.Correo || data.IdentificadorUsuario == result.SingleData.Usuario) && passHash.SequenceEqual(result.SingleData.Contrasena))
+                    if ((data.IdentificadorUsuario.ToLower() == result.SingleData.Correo || data.IdentificadorUsuario.ToLower() == result.SingleData.Usuario) && passHash.SequenceEqual(result.SingleData.Contrasena))
                     {
-                        result.Message = "La contraseña es igual";
+                        token.Message = "La contraseña es igual";
                         var keyBytes = Encoding.ASCII.GetBytes(secretKey);
                         var claims = new ClaimsIdentity();
 
@@ -63,7 +64,7 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
                         var tokenDescriptor = new SecurityTokenDescriptor
                         {
                             Subject = claims,
-                            Expires = DateTime.UtcNow.AddHours(1),
+                            Expires = DateTime.UtcNow.AddMinutes(1),
                             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes),SecurityAlgorithms.HmacSha256Signature),
                         };
 
@@ -72,14 +73,24 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
 
                         string tokencreado = tokenHandler.WriteToken(tokenConfig);
 
-                        token.SingleData = new TokenGot { Token = tokencreado };
+                        token.SingleData = new TokenGot { 
+                            IdUsuario = result.SingleData.IdUsuario
+                            ,Usuario = result.SingleData.Usuario
+                            ,Correo = result.SingleData.Correo
+                            ,IdRol = result.SingleData.IdRol
+                            ,NombreRol = result.SingleData.NombreRol
+                            ,Token = tokencreado };
+
+                        token.Successful = true;
 
                         return token;
                     }
                     else
                     {
-                        token.Message = "La contraseña ingresada no coincide con su contraseña actual";
+                        token.Message = "Su identificador de Usuario o su Contraseña son incorrectas.";
                         token.SingleData = new TokenGot { Token = ""};
+
+                        token.Successful = false;
 
                         return token;
                     }
@@ -89,10 +100,12 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
                 {
                     if (result.Errors.Any())
                     {
+                        token.Successful = false;
                         token.Message = result.Errors[0];
                     }
                     else
                     {
+                        token.Successful = false;
                         token.Message = "El correo o el usuario ingresado no existe";
                     }
                     

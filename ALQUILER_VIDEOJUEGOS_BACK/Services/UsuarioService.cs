@@ -28,21 +28,36 @@ namespace ALQUILER_VIDEOJUEGOS_BACK.Services
             return result;
         }
 
-        public async Task<Response> SetUsuario(SetUsuario model)
+        public async Task<Response<SetUserResult>> SetUsuario(SetUsuario model)
         {
-            var result = new Response();
+            //var result = new Response();
+            var result = new Response<SetUserResult>();
             var passHash = Utilidades.HashPassword(model.Contrasena);
             try
             {
 
-                _context.Database.
-                    ExecuteSqlInterpolated($"dbo.SetUsuario {model.Nombre},{model.Apellido},{model.Correo},{passHash},{model.Direccion},{model.Telefono},{model.IdRol}");
+                var resp =_context.SetUserResult
+                    .FromSqlInterpolated($"dbo.SetUsuario {model.Usuario},{model.Nombre},{model.Apellido},{model.Correo},{passHash},{model.Direccion},{model.Telefono}").ToList();
 
-                result.Message = "Los datos fueron ingresados exitosamente!";
+                result.SingleData = resp.FirstOrDefault();
+
+                if (result.SingleData.EstatusRegistro == "CORRECTO")
+                {
+                    result.Message = result.SingleData.Result;
+                    result.Successful = true;
+                }
+                else
+                {
+                    result.Message = result.SingleData.Result;
+                    result.Successful = false;
+                }
+                
             }
             catch (Exception ex)
             {
                 result.Errors.Add(ex.Message);
+                result.Message = "No se ha podido registrar sus datos";
+                result.Successful = false;
 
             }
 

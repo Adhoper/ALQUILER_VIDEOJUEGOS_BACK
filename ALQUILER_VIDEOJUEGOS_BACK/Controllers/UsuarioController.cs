@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ALQUILER_VIDEOJUEGOS_BACK.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class UsuarioController : Controller
     {
         private readonly IUsuarioService _Service;
