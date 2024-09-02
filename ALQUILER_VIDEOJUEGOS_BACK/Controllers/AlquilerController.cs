@@ -1,12 +1,14 @@
 ﻿using ALQUILER_VIDEOJUEGOS_BACK.Interfaces;
 using ALQUILER_VIDEOJUEGOS_BACK.Models;
 using ALQUILER_VIDEOJUEGOS_BACK.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ALQUILER_VIDEOJUEGOS_BACK.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AlquilerController : Controller
     {
         private readonly IAlquilerService _service;
